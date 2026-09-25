@@ -546,20 +546,20 @@ function copyToClipboard() {
   lines.push("ЗАКАЗ НАСТОЕК — " + todayStr);
   lines.push("");
 
-  // КУПИТЬ
+  // КУПИТЬ — в формате чек-листа iOS
   lines.push("КУПИТЬ:");
   shopRows.forEach(([ing, val, unit]) => {
-    lines.push(`${ing} — ${val} ${unit}`);
+    lines.push(`- [ ] ${ing} — ${val} ${unit}`);
   });
   lines.push("");
 
-  // ПАРТИИ
+  // ПАРТИИ — даты через //
   const startDate = batches.length ? fmtDate(batches[0].start) : "";
   lines.push("ПАРТИИ (закладка " + startDate + "):");
   batches.forEach(b => {
     let line = `${b.name} (${b.portions} порц.) — закладка ${fmtDate(b.start)}`;
-    if (b.addDate) line += `, добавка ${fmtDate(b.addDate)}`;
-    line += `, готово ${fmtDate(b.ready)}`;
+    if (b.addDate) line += ` // добавка ${fmtDate(b.addDate)}`;
+    line += ` // готово ${fmtDate(b.ready)}`;
     lines.push(line);
   });
   lines.push("");
@@ -574,7 +574,7 @@ function copyToClipboard() {
     }
   });
   lines.push("");
-  lines.push("Заказ готов: " + fmtDate(maxReady));
+  lines.push("Заказ будет готов: " + fmtDate(maxReady));
 
   const text = lines.join("\n");
 
