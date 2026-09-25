@@ -546,13 +546,12 @@ function copyToClipboard() {
   lines.push("ЗАКАЗ НАСТОЕК — " + todayStr);
   lines.push("");
 
-  // КУПИТЬ — в формате чек-листа iOS
-  // КУПИТЬ — простой список без маркеров
+   // КУПИТЬ — простой список без маркеров
   lines.push("КУПИТЬ:");
   shopRows.forEach(([ing, val, unit]) => {
     lines.push(`${ing} — ${val} ${unit}`);
   });
-  lines.push("");
+ push("");
 
   // ПАРТИИ — даты через //
   const startDate = batches.length ? fmtDate(batches[0].start) : "";
