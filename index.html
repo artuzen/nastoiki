@@ -52,6 +52,7 @@
   .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
   #status { color: #0d5c4f; font-weight: 600; margin-left: 12px; }
   .ready-line { text-align: right; font-size: 15px; padding: 10px; color: #0d5c4f; font-weight: 600; }
+  #commonDateInfo { color: #0d5c4f; font-size: 14px; font-weight: 500; }
   .toast {
     position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
     background: #0d5c4f; color: white; padding: 12px 24px;
@@ -67,6 +68,16 @@
 
 <h1>🍸 Калькулятор настоек</h1>
 <p class="hint">Заполни заказ → нажми «Рассчитать» → получишь партии, покупки и цену.</p>
+
+<!-- ============ ИМЯ ЗАКАЗЧИКА ============ -->
+<div class="card">
+  <div class="row">
+    <div class="field" style="flex:1;">
+      <label>Имя заказчика (опционально)</label>
+      <input type="text" id="inpCustomer" placeholder="Например: Иван" style="width:100%; min-width:280px;">
+    </div>
+  </div>
+</div>
 
 <!-- ============ ДОБАВИТЬ В ЗАКАЗ ============ -->
 <div class="card">
@@ -211,6 +222,7 @@ const INGREDIENT_MERGE = {
 function mergeName(name) { return INGREDIENT_MERGE[name] || name; }
 
 const STORAGE_KEY = "nastoiki_order_v3";
+const STORAGE_CUSTOMER_KEY = "nastoiki_customer_v1";
 let order = loadOrder();
 
 // ============ ИНИЦИАЛИЗАЦИЯ ============
@@ -222,6 +234,15 @@ function init() {
     opt.textContent = r[0];
     sel.appendChild(opt);
   });
+
+  // Подставляем сохранённое имя заказчика
+  const savedName = localStorage.getItem(STORAGE_CUSTOMER_KEY) || "";
+  const inpCust = document.getElementById("inpCustomer");
+  inpCust.value = savedName;
+  inpCust.addEventListener("change", () => {
+    localStorage.setItem(STORAGE_CUSTOMER_KEY, inpCust.value.trim());
+  });
+
   renderOrder();
 }
 
@@ -481,16 +502,18 @@ function renderCost(rows) {
   });
 }
 
-// ============ ЭКСПОРТ ============
+// ============ ЭКСПОРТ В EXCEL ============
 function downloadExcel() {
   if (!window.__lastCalc) { alert("Сначала нажми «Рассчитать»"); return; }
   const { batches, shopRows, costRows, maxReady, commonWantDate } = window.__lastCalc;
+  const customer = document.getElementById("inpCustomer").value.trim();
 
   const html = `
     <html xmlns:o="urn:schemas-microsoft-com:office:office"
           xmlns:x="urn:schemas-microsoft-com:office:excel">
     <head><meta charset="UTF-8"></head>
     <body>
+      ${customer ? `<h2>Заказчик: ${customer}</h2>` : ""}
       <h2>Партии (желаемая дата: ${fmtDate(commonWantDate)})</h2>
       <table border="1">
         <tr><th>Настойка</th><th>Порций</th><th>Срок, дн</th><th>Желаемая дата</th>
@@ -544,17 +567,26 @@ function copyToClipboard() {
   }
   const { batches, shopRows, costRows, maxReady } = window.__lastCalc;
   const todayStr = fmtDate(new Date());
+  const customer = document.getElementById("inpCustomer").value.trim();
+
+  // Сохраняем имя заказчика
+  localStorage.setItem(STORAGE_CUSTOMER_KEY, customer);
 
   const lines = [];
   lines.push("ЗАКАЗ НАСТОЕК — " + todayStr);
   lines.push("");
 
-   // КУПИТЬ — простой список без маркеров
+  if (customer) {
+    lines.push("ЗАКАЗЧИК: " + customer);
+    lines.push("");
+  }
+
+  // КУПИТЬ — простой список без маркеров
   lines.push("КУПИТЬ:");
   shopRows.forEach(([ing, val, unit]) => {
     lines.push(`${ing} — ${val} ${unit}`);
   });
- lines.push("");
+  lines.push("");
 
   // ПАРТИИ — даты через //
   const startDate = batches.length ? fmtDate(batches[0].start) : "";
@@ -581,7 +613,6 @@ function copyToClipboard() {
 
   const text = lines.join("\n");
 
-  // Копирование с fallback для старых браузеров
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
   } else {
