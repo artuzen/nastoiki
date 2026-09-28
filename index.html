@@ -54,10 +54,13 @@
   .ready-line { text-align: right; font-size: 15px; padding: 10px; color: #0d5c4f; font-weight: 600; }
   #commonDateInfo { color: #0d5c4f; font-size: 14px; font-weight: 500; }
   .toast {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-    background: #0d5c4f; color: white; padding: 12px 24px;
-    border-radius: 24px; font-weight: 600; font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0d5c4f; color: white;
+    padding: 24px 48px;
+    border-radius: 16px;
+    font-weight: 700; font-size: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     opacity: 0; pointer-events: none; transition: opacity 0.3s;
     z-index: 1000;
   }
@@ -134,7 +137,7 @@
           <th>Порций</th>
           <th>Срок, дн</th>
           <th>Желаемая дата</th>
-          <th>Дата закладки</th>
+          <th>Дата заливки</th>
           <th>Дата добавки</th>
           <th>Дата готовности</th>
         </tr>
@@ -284,6 +287,8 @@ function clearOrder() {
   if (!confirm("Очистить весь заказ?")) return;
   order = [];
   saveOrder();
+  document.getElementById("inpCustomer").value = "";
+  localStorage.setItem(STORAGE_CUSTOMER_KEY, "");
   renderOrder();
   document.getElementById("results").style.display = "none";
   document.getElementById("commonDateInfo").textContent = "";
@@ -365,7 +370,7 @@ function calculate() {
 
   if (pre.length === 0) return;
 
-  // --- 3. Общая дата закладки = минимум ---
+  // --- 3. Общая Дата заливки = минимум ---
   let commonStart = pre[0].indStart;
   pre.forEach(p => { if (p.indStart < commonStart) commonStart = p.indStart; });
 
@@ -517,7 +522,7 @@ function downloadExcel() {
       <h2>Партии (желаемая дата: ${fmtDate(commonWantDate)})</h2>
       <table border="1">
         <tr><th>Настойка</th><th>Порций</th><th>Срок, дн</th><th>Желаемая дата</th>
-            <th>Дата закладки</th><th>Дата добавки</th><th>Дата готовности</th></tr>
+            <th>Дата заливки</th><th>Дата добавки</th><th>Дата готовности</th></tr>
         ${batches.map(b => `<tr>
           <td>${b.name}</td><td>${b.portions}</td><td>${b.days}</td>
           <td>${fmtDate(b.wantDate)}</td>
