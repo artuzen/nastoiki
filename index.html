@@ -72,7 +72,6 @@
 <h1>🍸 Калькулятор настоек</h1>
 <p class="hint">Заполни заказ → нажми «Рассчитать» → получишь партии, покупки и цену.</p>
 
-<!-- ============ ИМЯ ЗАКАЗЧИКА ============ -->
 <div class="card">
   <div class="row">
     <div class="field" style="flex:1;">
@@ -82,7 +81,6 @@
   </div>
 </div>
 
-<!-- ============ ДОБАВИТЬ В ЗАКАЗ ============ -->
 <div class="card">
   <h2 style="margin-top:0; border:none;">Добавить в заказ</h2>
   <div class="row">
@@ -103,7 +101,6 @@
   </div>
 </div>
 
-<!-- ============ ЗАКАЗ ============ -->
 <div class="card">
   <h2 style="margin-top:0;">📋 Заказ <span id="commonDateInfo"></span></h2>
   <table id="tblOrder">
@@ -125,21 +122,15 @@
   </div>
 </div>
 
-<!-- ============ РЕЗУЛЬТАТЫ ============ -->
 <div id="results" style="display:none;">
-
   <div class="card">
     <h2 style="margin-top:0;">🗓 Партии</h2>
     <table id="tblBatches">
       <thead>
         <tr>
-          <th>Настойка</th>
-          <th>Порций</th>
-          <th>Срок, дн</th>
-          <th>Желаемая дата</th>
-          <th>Дата заливки</th>
-          <th>Дата добавки</th>
-          <th>Дата готовности</th>
+          <th>Настойка</th><th>Порций</th><th>Срок, дн</th>
+          <th>Желаемая дата</th><th>Дата заливки</th>
+          <th>Дата добавки</th><th>Дата готовности</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -149,9 +140,7 @@
   <div class="card">
     <h2 style="margin-top:0;">🛒 Список покупок</h2>
     <table id="tblShopping">
-      <thead>
-        <tr><th>Ингредиент</th><th>Кол-во</th><th>Ед.</th></tr>
-      </thead>
+      <thead><tr><th>Ингредиент</th><th>Кол-во</th><th>Ед.</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -159,134 +148,73 @@
   <div class="card">
     <h2 style="margin-top:0;">💰 Цена заказа</h2>
     <table id="tblCost">
-      <thead>
-        <tr><th>Настойка</th><th>Порций</th><th>Цена за 0,5л</th><th>Сумма</th></tr>
-      </thead>
+      <thead><tr><th>Настойка</th><th>Порций</th><th>Цена за 0,5л</th><th>Сумма</th></tr></thead>
       <tbody></tbody>
     </table>
     <div id="readyLine" class="ready-line"></div>
   </div>
-
 </div>
 
 <script>
-// ============ РЕЦЕПТЫ ============
-// [Название, Срок_дн, Цена_0.5л, Добавка_дн (null = нет), ингредиенты]
 const RECIPES = [
-  ["На ирисках", 10, 650, 10, [
-    ["Ириски", 350, "г"],
-    ["Водка", 0.5, "л"],
-    ["Сливки", 0.5, "л"],
-  ]],
-  ["Банановая", 10, 650, 7, [
-    ["Бананы", 3, "шт"],
-    ["Водка", 0.5, "л"],
-    ["Сливки", 0.5, "л"],
-    ["Сахар", 250, "г"],
-  ]],
-  ["Солёная карамель", 4, 650, null, [
-    ["Сливки", 0.5, "л"],
-    ["Водка", 0.5, "л"],
-    ["Сахар", 300, "г"],
-    ["Соль", 10, "г"],
-  ]],
-  ["Мандарин-лимон с пряностями", 14, 650, 7, [
-    ["Мандарины", 350, "г"],
-    ["Лимоны", 250, "г"],
-    ["Корица (палочка)", 1, "шт"],
-    ["Гвоздика", 10, "шт"],
-    ["Водка", 0.5, "л"],
-    ["Сахар (сироп)", 250, "г"],
-    ["Вода (сироп)", 300, "мл"],
-  ]],
-  ["Лимончелло", 14, 500, 7, [
-    ["Лимон", 4, "шт"],
-    ["Водка", 0.5, "л"],
-    ["Сахар", 200, "г"],
-    ["Вода", 150, "мл"],
-  ]],
-  ["Кремовое лимончелло", 14, 650, 7, [
-    ["Лимон", 4, "шт"],
-    ["Водка", 0.5, "л"],
-    ["Сахар (сироп)", 200, "г"],
-    ["Вода (сироп)", 150, "мл"],
-    ["Сахар (крем)", 200, "г"],
-    ["Сливки", 0.5, "л"],
-  ]],
+  ["На ирисках", 10, 650, 10, [["Ириски",350,"г"],["Водка",0.5,"л"],["Сливки",0.5,"л"]]],
+  ["Банановая", 10, 650, 7, [["Бананы",3,"шт"],["Водка",0.5,"л"],["Сливки",0.5,"л"],["Сахар",250,"г"]]],
+  ["Солёная карамель", 4, 650, null, [["Сливки",0.5,"л"],["Водка",0.5,"л"],["Сахар",300,"г"],["Соль",10,"г"]]],
+  ["Мандарин-лимон с пряностями", 14, 650, 7, [["Мандарины",350,"г"],["Лимоны",250,"г"],["Корица (палочка)",1,"шт"],["Гвоздика",10,"шт"],["Водка",0.5,"л"],["Сахар (сироп)",250,"г"],["Вода (сироп)",300,"мл"]]],
+  ["Лимончелло", 14, 500, 7, [["Лимон",4,"шт"],["Водка",0.5,"л"],["Сахар",200,"г"],["Вода",150,"мл"]]],
+  ["Кремовое лимончелло", 14, 650, 7, [["Лимон",4,"шт"],["Водка",0.5,"л"],["Сахар (сироп)",200,"г"],["Вода (сироп)",150,"мл"],["Сахар (крем)",200,"г"],["Сливки",0.5,"л"]]],
 ];
 
 const NOT_FOR_SHOPPING = ["Вода", "Вода (сироп)", "Краситель"];
-
-const INGREDIENT_MERGE = {
-  "Сахар (сироп)": "Сахар",
-  "Сахар (крем)": "Сахар",
-  "Вода (сироп)": "Вода",
-};
+const INGREDIENT_MERGE = {"Сахар (сироп)":"Сахар","Сахар (крем)":"Сахар","Вода (сироп)":"Вода"};
 function mergeName(name) { return INGREDIENT_MERGE[name] || name; }
 
 const STORAGE_KEY = "nastoiki_order_v3";
 const STORAGE_CUSTOMER_KEY = "nastoiki_customer_v1";
 let order = loadOrder();
 
-// ============ ИНИЦИАЛИЗАЦИЯ ============
 function init() {
   const sel = document.getElementById("selRecipe");
   RECIPES.forEach(r => {
     const opt = document.createElement("option");
-    opt.value = r[0];
-    opt.textContent = r[0];
+    opt.value = r[0]; opt.textContent = r[0];
     sel.appendChild(opt);
   });
-
-  // Подставляем сохранённое имя заказчика
   const savedName = localStorage.getItem(STORAGE_CUSTOMER_KEY) || "";
   const inpCust = document.getElementById("inpCustomer");
   inpCust.value = savedName;
   inpCust.addEventListener("change", () => {
     localStorage.setItem(STORAGE_CUSTOMER_KEY, inpCust.value.trim());
   });
-
   renderOrder();
 }
 
-// ============ СОХРАНЕНИЕ ============
 function saveOrder() { localStorage.setItem(STORAGE_KEY, JSON.stringify(order)); }
-function loadOrder() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch (e) { return []; }
-}
+function loadOrder() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { return []; } }
 
-// ============ ЗАКАЗ ============
 function addOrder() {
   const name = document.getElementById("selRecipe").value;
   const portions = parseInt(document.getElementById("inpPortions").value, 10);
   const dateStr = document.getElementById("inpDate").value;
-
   if (!name) return alert("Выбери настойку");
   if (!portions || portions < 1) return alert("Укажи количество порций (минимум 1)");
-
   order.push({ name, portions, wantDate: dateStr || null });
-  saveOrder();
-  renderOrder();
+  saveOrder(); renderOrder();
   document.getElementById("inpPortions").value = 1;
   document.getElementById("inpDate").value = "";
   flash("Добавлено: " + name + " ×" + portions);
-
   if (document.getElementById("results").style.display === "block") calculate();
 }
 
 function removeOrder(i) {
-  order.splice(i, 1);
-  saveOrder();
-  renderOrder();
+  order.splice(i, 1); saveOrder(); renderOrder();
   if (document.getElementById("results").style.display === "block") calculate();
   else document.getElementById("results").style.display = "none";
 }
 
 function clearOrder() {
   if (!confirm("Очистить весь заказ?")) return;
-  order = [];
-  saveOrder();
+  order = []; saveOrder();
   document.getElementById("inpCustomer").value = "";
   localStorage.setItem(STORAGE_CUSTOMER_KEY, "");
   renderOrder();
@@ -313,7 +241,6 @@ function renderOrder() {
   });
 }
 
-// ============ УТИЛИТЫ ============
 function fmtDateRu(iso) {
   if (!iso) return "";
   const [y, m, d] = iso.split("-");
@@ -329,19 +256,11 @@ function fmtDate(d) {
 }
 function round3(x) { return Math.round(x * 1000) / 1000; }
 
-// ============ РАСЧЁТ ============
 function calculate() {
-  if (order.length === 0) {
-    alert("Сначала добавь хотя бы одну настойку в заказ");
-    return;
-  }
-
+  if (order.length === 0) { alert("Сначала добавь хотя бы одну настойку в заказ"); return; }
   const todayD = today();
-
-  // --- 1. ЖЕЛАЕМАЯ дата (общая для всех) ---
   const datesInOrder = order.map(o => o.wantDate).filter(d => d);
   let commonWantDate;
-
   if (datesInOrder.length > 0) {
     const maxIso = datesInOrder.sort().slice(-1)[0];
     commonWantDate = new Date(maxIso + "T00:00:00");
@@ -353,49 +272,25 @@ function calculate() {
     });
     commonWantDate = addDays(todayD, maxDays + 2);
   }
-
-  // --- 2. Индивидуальные закладки ---
   const pre = order.map(o => {
     const rec = RECIPES.find(r => r[0] === o.name);
     if (!rec) return null;
     const [, days, price, addOffset] = rec;
     const indStart = addDays(commonWantDate, -days - 1);
-    return {
-      name: o.name,
-      portions: o.portions,
-      days, price, addOffset,
-      indStart,
-    };
+    return { name: o.name, portions: o.portions, days, price, addOffset, indStart };
   }).filter(Boolean);
-
   if (pre.length === 0) return;
-
-  // --- 3. Общая Дата заливки = минимум ---
   let commonStart = pre[0].indStart;
   pre.forEach(p => { if (p.indStart < commonStart) commonStart = p.indStart; });
-
-  // --- 4. Партии ---
   const batches = pre.map(p => {
     const ready = addDays(commonStart, p.days);
     const addDate = (p.addOffset === null) ? null : addDays(commonStart, p.addOffset);
-    return {
-      name: p.name,
-      portions: p.portions,
-      days: p.days,
-      wantDate: commonWantDate,
-      start: new Date(commonStart),
-      ready, addDate,
-    };
+    return { name: p.name, portions: p.portions, days: p.days, wantDate: commonWantDate, start: new Date(commonStart), ready, addDate };
   });
-
   renderBatches(batches, todayD);
-
-  // Информация в шапке
   const info = document.getElementById("commonDateInfo");
   const hasManualDates = datesInOrder.length > 0;
   info.textContent = `(гот. к: ${fmtDate(commonWantDate)}${hasManualDates ? "" : ", расчёт от сегодня"})`;
-
-  // --- 5. Покупки ---
   const totals = {};
   order.forEach(o => {
     const rec = RECIPES.find(r => r[0] === o.name);
@@ -407,7 +302,6 @@ function calculate() {
       totals[key] = (totals[key] || 0) + norm * volL;
     });
   });
-
   const seen = new Set();
   const shopRows = [];
   RECIPES.forEach(r => {
@@ -424,14 +318,10 @@ function calculate() {
   });
   const totalPortions = order.reduce((s, o) => s + o.portions, 0);
   shopRows.push(["Бутылки 0,5 л", totalPortions, "шт"]);
-
   const bottleRow = shopRows.pop();
   shopRows.sort((a, b) => a[0].localeCompare(b[0], "ru"));
   shopRows.push(bottleRow);
-
   renderShopping(shopRows);
-
-  // --- 6. Цена ---
   const byName = {};
   order.forEach(o => {
     const rec = RECIPES.find(r => r[0] === o.name);
@@ -439,7 +329,6 @@ function calculate() {
     if (!byName[o.name]) byName[o.name] = { portions: 0, price: rec[2] };
     byName[o.name].portions += o.portions;
   });
-
   const costRows = [];
   let totalSum = 0;
   Object.keys(byName).forEach(name => {
@@ -450,17 +339,13 @@ function calculate() {
   });
   costRows.push(["ИТОГО", "", "", totalSum]);
   renderCost(costRows);
-
   let maxReady = batches[0].ready;
   batches.forEach(b => { if (b.ready > maxReady) maxReady = b.ready; });
-  document.getElementById("readyLine").textContent =
-    "Заказ будет готов: " + fmtDate(maxReady);
-
+  document.getElementById("readyLine").textContent = "Заказ будет готов: " + fmtDate(maxReady);
   document.getElementById("results").style.display = "block";
   window.__lastCalc = { batches, shopRows, costRows, totalSum, maxReady, commonWantDate };
 }
 
-// ============ ОТРИСОВКА ============
 function renderBatches(batches, todayD) {
   const tb = document.querySelector("#tblBatches tbody");
   tb.innerHTML = "";
@@ -507,15 +392,12 @@ function renderCost(rows) {
   });
 }
 
-// ============ ЭКСПОРТ В EXCEL ============
 function downloadExcel() {
   if (!window.__lastCalc) { alert("Сначала нажми «Рассчитать»"); return; }
   const { batches, shopRows, costRows, maxReady, commonWantDate } = window.__lastCalc;
   const customer = document.getElementById("inpCustomer").value.trim();
-
   const html = `
-    <html xmlns:o="urn:schemas-microsoft-com:office:office"
-          xmlns:x="urn:schemas-microsoft-com:office:excel">
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
     <head><meta charset="UTF-8"></head>
     <body>
       ${customer ? `<h2>Заказчик: ${customer}</h2>` : ""}
@@ -530,13 +412,11 @@ function downloadExcel() {
           <td>${b.addDate ? fmtDate(b.addDate) : "—"}</td>
           <td>${fmtDate(b.ready)}</td></tr>`).join("")}
       </table>
-
       <h2>Список покупок</h2>
       <table border="1">
         <tr><th>Ингредиент</th><th>Кол-во</th><th>Ед.</th></tr>
         ${shopRows.map(([i,v,u]) => `<tr><td>${i}</td><td>${v}</td><td>${u}</td></tr>`).join("")}
       </table>
-
       <h2>Цена заказа</h2>
       <table border="1">
         <tr><th>Настойка</th><th>Порций</th><th>Цена за 0,5л</th><th>Сумма</th></tr>
@@ -545,16 +425,13 @@ function downloadExcel() {
       <p><b>Заказ будет готов: ${fmtDate(maxReady)}</b></p>
     </body></html>
   `;
-
   const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const todayStr = fmtDate(new Date()).replace(/\./g, "-");
   a.href = url;
   a.download = `настойки-${todayStr}.xls`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
@@ -564,34 +441,31 @@ function flash(msg) {
   setTimeout(() => { s.textContent = ""; }, 2000);
 }
 
-// ============ КОПИРОВАТЬ В БУФЕР ============
 function copyToClipboard() {
-  if (!window.__lastCalc) {
-    alert("Сначала нажми «Рассчитать»");
-    return;
-  }
-  const { batches, shopRows, costRows, maxReady } = window.__lastCalc;
+  if (!window.__lastCalc) { alert("Сначала нажми «Рассчитать»"); return; }
+  const { batches, shopRows, costRows, maxReady, commonWantDate } = window.__lastCalc;
   const todayStr = fmtDate(new Date());
   const customer = document.getElementById("inpCustomer").value.trim();
-
-  // Сохраняем имя заказчика
   localStorage.setItem(STORAGE_CUSTOMER_KEY, customer);
-
   const lines = [];
   lines.push("ЗАКАЗ НАСТОЕК — " + todayStr);
   lines.push("");
-
   if (customer) {
     lines.push("ЗАКАЗЧИК: " + customer);
     lines.push("");
   }
-
-  // КУПИТЬ — простой список без маркеров
   lines.push("КУПИТЬ:");
   shopRows.forEach(([ing, val, unit]) => {
     lines.push(`${ing} — ${val} ${unit}`);
   });
   lines.push("");
+
+  // ЖЕЛАЕМАЯ ДАТА (общая для заказа)
+  const wantDate = window.__lastCalc.commonWantDate;
+  if (wantDate) {
+    lines.push("ЖЕЛАЕМАЯ ДАТА: " + fmtDate(wantDate));
+    lines.push("");
+  }
 
   // ПАРТИИ — даты через //
   const startDate = batches.length ? fmtDate(batches[0].start) : "";
@@ -603,8 +477,6 @@ function copyToClipboard() {
     lines.push(line);
   });
   lines.push("");
-
-  // ЦЕНА
   lines.push("ЦЕНА:");
   costRows.forEach(([name, portions, price, sum]) => {
     if (name === "ИТОГО") {
@@ -615,9 +487,7 @@ function copyToClipboard() {
   });
   lines.push("");
   lines.push("Заказ будет готов: " + fmtDate(maxReady));
-
   const text = lines.join("\n");
-
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
   } else {
@@ -628,10 +498,8 @@ function copyToClipboard() {
 function fallbackCopy(text) {
   const ta = document.createElement("textarea");
   ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.left = "-9999px";
-  document.body.appendChild(ta);
-  ta.select();
+  ta.style.position = "fixed"; ta.style.left = "-9999px";
+  document.body.appendChild(ta); ta.select();
   try { document.execCommand("copy"); showToast(); }
   catch (e) { alert("Не удалось скопировать. Скопируй вручную:\n\n" + text); }
   document.body.removeChild(ta);
